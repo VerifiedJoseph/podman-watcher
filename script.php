@@ -124,9 +124,7 @@ function getImageDate(string $id)
  */
 function getRemoteImageDate(string $name)
 {
-	$command = 'skopeo inspect ' . escapeshellarg('docker://'. $name) . ' --format {{.Created}}';
-
-	exec($command, $data);
+	exec('skopeo inspect ' . escapeshellarg('docker://'. $name) . ' --format {{.Created}}', $data);
 	return strtotime($data[0]);
 }
 
