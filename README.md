@@ -21,3 +21,9 @@ Use `config.php` (copied from [`config.example.php`](config.example.php)) to con
 - PHP Extensions:
   - [`JSON`](https://www.php.net/manual/en/book.json.php)
   - [`cURL`](https://secure.php.net/manual/en/book.curl.php)
+
+## Notes
+
+"Dry-run, download-only, notifiy-only modes for podman auto-update"
+
+https://github.com/containers/podman/issues/9949
