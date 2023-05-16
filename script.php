@@ -45,7 +45,7 @@ function output(string $text)
 	echo $text . "\n";
 }
 
-function ignoreRegistries($name)
+function ignoreRegistry($name)
 {
 	$registries = ['localhost'];
 
@@ -62,7 +62,7 @@ function ignoreRegistries($name)
 	return false;
 }
 
-function ignoreImages($name)
+function ignoreImage($name)
 {
 	$images = [];
 
@@ -155,7 +155,7 @@ function send(string $title, string $message)
 	$info = curl_getinfo($ch);
 
 	if (curl_errno($ch)) {
-		throw new Exception('Request failed');
+		throw new Exception('Request failed:' . curl_error($ch));
 	}
 	
 	if ($info['http_code'] !== 200) {
@@ -177,7 +177,7 @@ try
 	foreach (getContainerIds() as $containerId) {
 		$imageName = getImageName($containerId);
 
-		if (ignoreImages($imageName) === true || ignoreRegistries($imageName) === true) {
+		if (($imageName) === true || ignoreRegistry($imageName) === true) {
 			output('Skipping ' . $imageName);
 			$skippedCount++;
 			continue;
@@ -204,10 +204,10 @@ try
 	output('Updates found: ' . count($imageUpdates));
 
 	if ($imageUpdates !== []) {
-		output('Sending gotify messages');
+		output('Sending gotify message');
 
 		$title = 'Podman image updates for ' . gethostname();
-		$message = "Image(s) require an update: \n" . implode("\n", $imageUpdates);
+		$message = "Images require an update: \n" . implode("\n", $imageUpdates);
 
 		send($title, $message);
 	}
