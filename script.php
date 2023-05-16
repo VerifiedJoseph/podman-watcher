@@ -94,7 +94,7 @@ function getContainerIds()
  */
 function getImageName(string $containerId)
 {
-	exec('podman inspect ' . $containerId . ' --format {{.ImageName}}', $data);
+	exec('podman inspect ' . escapeshellarg($containerId) . ' --format {{.ImageName}}', $data);
 	return $data[0];
 } 
 
@@ -104,7 +104,7 @@ function getImageName(string $containerId)
  */
 function getImageId(string $containerId)
 {
-	exec('podman inspect ' . $containerId . ' --format {{.ImageName}}', $data);
+	exec('podman inspect ' . escapeshellarg($containerId) . ' --format {{.ImageName}}', $data);
 	return $data[0];
 }
 
@@ -114,7 +114,7 @@ function getImageId(string $containerId)
  */
 function getImageDate(string $id)
 {
-	exec('podman inspect ' . $id . ' --format {{.Created}}', $data);
+	exec('podman inspect ' . escapeshellarg($id) . ' --format {{.Created}}', $data);
 	return strtotime($data[0]);
 }
 
@@ -124,7 +124,9 @@ function getImageDate(string $id)
  */
 function getRemoteImageDate(string $name)
 {
-	exec('skopeo inspect docker://'. $name . ' --format {{.Created}}', $data);
+	$command = 'skopeo inspect ' . escapeshellarg('docker://'. $name) . ' --format {{.Created}}';
+
+	exec($command, $data);
 	return strtotime($data[0]);
 }
 
