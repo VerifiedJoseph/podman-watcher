@@ -1,6 +1,10 @@
 <?php
 
-function checkInstall()
+/**
+ * Check system for podman & skopeo
+ * @throws Exception if a program is not found.
+ */
+function checkInstall(): void
 {
 	if (exec('podman --version') === false) {
 		throw new Exception('podman not found');
@@ -11,7 +15,12 @@ function checkInstall()
 	}
 }
 
-function checkConfig()
+/**
+ * Check configuration
+ * @throws Exception if configuration file is not found.
+ * @throws Exception if a required constant is not set or is invalid.
+ */
+function checkConfig(): void
 {
 	if (!file_exists('config.php')) {
 		throw new Exception('Configuration file not found.');
@@ -40,12 +49,20 @@ function checkConfig()
 	}
 }
 
-function output(string $text)
+/**
+ * Output text to the terminal
+ * @param string $text Text
+ */
+function output(string $text): void
 {
 	echo $text . "\n";
 }
 
-function ignoreRegistry($name)
+/**
+ * Check if the registry of an image is on the ignore list
+ * @param $name Image name
+ */
+function ignoreRegistry($name): bool
 {
 	$registries = ['localhost'];
 
@@ -62,7 +79,11 @@ function ignoreRegistry($name)
 	return false;
 }
 
-function ignoreImage($name)
+/**
+ * Check if an image is on the ignore list
+ * @param $name Image name
+ */
+function ignoreImage($name): bool
 {
 	$images = [];
 
@@ -80,29 +101,29 @@ function ignoreImage($name)
 } 
 
 /**
- * Get Ids for all running containers
+ * Get IDs for all running containers
  */
-function getContainerIds()
+function getContainerIds(): array
 {
 	exec('podman ps --format={{.ID}}', $data);
 	return $data;
 }
 
 /**
- * Get name of an image
+ * Get image name
  * @param string $containerId Container ID
  */
-function getImageName(string $containerId)
+function getImageName(string $containerId): string
 {
 	exec('podman inspect ' . escapeshellarg($containerId) . ' --format {{.ImageName}}', $data);
 	return $data[0];
 } 
 
 /**
- * Get id of an image
+ * Get image ID
  * @param string $containerId Container ID
  */
-function getImageId(string $containerId)
+function getImageId(string $containerId): string
 {
 	exec('podman inspect ' . escapeshellarg($containerId) . ' --format {{.ImageName}}', $data);
 	return $data[0];
@@ -112,7 +133,7 @@ function getImageId(string $containerId)
  * Get image creation date
  * @param string $id Image ID
  */
-function getImageDate(string $id)
+function getImageDate(string $id): int
 {
 	exec('podman inspect ' . escapeshellarg($id) . ' --format {{.Created}}', $data);
 	return strtotime($data[0]);
@@ -122,12 +143,20 @@ function getImageDate(string $id)
  * Get remote image creation date
  * @param string $name Image name
  */
-function getRemoteImageDate(string $name)
+function getRemoteImageDate(string $name): int
 {
 	exec('skopeo inspect ' . escapeshellarg('docker://'. $name) . ' --format {{.Created}}', $data);
 	return strtotime($data[0]);
 }
 
+/**
+ * Send message using Gotify
+ * @param string $title Message title
+ * @param string $message Message body
+ * 
+ * @throws Exception if cURL request failed.
+ * @throws Exception if message send failed.
+ */
 function sendMessage(string $title, string $message)
 {
 	$data = [
@@ -205,7 +234,7 @@ try
 		output('Sending gotify message');
 
 		$title = 'Podman image updates for ' . gethostname();
-		$message = "Images require an update: \n" . implode("\n", $imageUpdates);
+		$message = "Images requiring a update: \n" . implode("\n", $imageUpdates);
 
 		sendMessage($title, $message);
 	}
