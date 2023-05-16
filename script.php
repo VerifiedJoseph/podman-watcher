@@ -130,7 +130,7 @@ function getRemoteImageDate(string $name)
 	return strtotime($data[0]);
 }
 
-function send(string $title, string $message)
+function sendMessage(string $title, string $message)
 {
 	$data = [
 		'title' => $title,
@@ -209,7 +209,7 @@ try
 		$title = 'Podman image updates for ' . gethostname();
 		$message = "Images require an update: \n" . implode("\n", $imageUpdates);
 
-		send($title, $message);
+		sendMessage($title, $message);
 	}
 } catch (Exception $e) {
 	output($e->getMessage());
