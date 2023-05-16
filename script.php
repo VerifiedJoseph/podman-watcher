@@ -175,7 +175,7 @@ try
 	foreach (getContainerIds() as $containerId) {
 		$imageName = getImageName($containerId);
 
-		if (($imageName) === true || ignoreRegistry($imageName) === true) {
+		if (ignoreImage($imageName) === true || ignoreRegistry($imageName) === true) {
 			output('Skipping ' . $imageName);
 			$skippedCount++;
 			continue;
