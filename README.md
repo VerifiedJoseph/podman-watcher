@@ -1,6 +1,6 @@
 # podman-watcher
 
-PHP script for checking podman container images for updates and then sending push notifications via Gotify.
+PHP script for checking podman container images for updates using [skopeo](https://github.com/containers/skopeo).
 
 ## Configuration
 
