@@ -199,7 +199,7 @@ try
 
 	output('Checked: ' . $checkedCount);
 	output('Skipped: ' . $skippedCount);
-	output('Updates found: ' . count($imageUpdates));
+	output('Updates: ' . count($imageUpdates));
 
 	if ($imageUpdates !== []) {
 		output('Sending gotify message');
