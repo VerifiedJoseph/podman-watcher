@@ -2,4 +2,4 @@
 
 define('GOTIFY_SERVER', '');
 define('GOTIFY_TOKEN', '');
-define('IGNORE_REGISTRIES', [])
+define('IGNORE_REGISTRIES', []);
