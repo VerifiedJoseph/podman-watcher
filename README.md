@@ -6,12 +6,12 @@ PHP script for checking podman container images for updates using [skopeo](https
 
 Use `config.php` (copied from [`config.example.php`](config.example.php)) to configure `podman-watcher`.
 
-| Name                | Description                             |
-| ------------------- | --------------------------------------- |
-| `GOTIFY_SERVER`     | Gotify server address                   |
-| `GOTIFY_TOKEN`      | Gotify application token                |
-| `IGNORE_IMAGES`     | Array of container images to not check. |
-| `IGNORE_REGISTRIES` | Array of image registries to not check. |
+| Name                |Required | Description                             |
+| --------------------|-------- | --------------------------------------- |
+| `GOTIFY_SERVER`     | Yes     | Gotify server address                   |
+| `GOTIFY_TOKEN`      | Yes     | Gotify application token                |
+| `IGNORE_IMAGES`     | No      | Array of container images to not check. |
+| `IGNORE_REGISTRIES` | No      | Array of image registries to not check. |
 
 ## Requirements
 
