@@ -6,10 +6,11 @@ PHP script for checking podman container images for updates and then sending pus
 
 Use `config.php` (copied from [`config.example.php`](config.example.php)) to configure `podman-watcher`.
 
-| Name            | Description              |
-| --------------- | ------------------------ |
-| `GOTIFY_SERVER` | Gotify server address    |
-| `GOTIFY_TOKEN`  | Gotify application token |
+| Name                | Description                             |
+| ------------------- | --------------------------------------- |
+| `GOTIFY_SERVER`     | Gotify server address                   |
+| `GOTIFY_TOKEN`      | Gotify application token                |
+| `IGNORE_REGISTRIES` | Array of image registries to not check. |
 
 ## Requirements
 

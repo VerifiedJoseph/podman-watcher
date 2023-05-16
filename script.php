@@ -26,12 +26,36 @@ function checkConfig()
 	if (defined('GOTIFY_TOKEN') === false || empty(constant('GOTIFY_TOKEN'))) {
 		throw new Exception('Gotify token must be set. [GOTIFY_TOKEN]');
 	}
+
+	if (defined('IGNORE_REGISTRIES') === true) {
+		if (empty(constant('IGNORE_REGISTRIES')) || is_array(constant('IGNORE_REGISTRIES')) === false) {
+			throw new Exception('Ignore registries value is empty or not an array be set. [IGNORE_REGISTRIES]');
+		}
+	}
+
 }
 
 function output(string $text)
 {
 	echo $text . "\n";
 }
+
+function ignoreRegistries($name)
+{
+	$registries = ['localhost'];
+
+	if (defined('IGNORE_REGISTRIES') === true) {
+		$registries = array_merge($registries, constant('IGNORE_REGISTRIES'));
+	}
+
+	foreach ($registries as $registry) {
+		if (str_starts_with($name, $registry)) {
+			return true;
+		}
+	}
+
+	return false;
+} 
 
 /**
  * Get Ids for all running containers
@@ -113,18 +137,21 @@ function send(string $title, string $message)
 	if ($info['http_code'] !== 200) {
 		throw new Exception('Message send failed' . '(' . $info['http_code'] .')');
 	}
+
+	output('Sent message');
 }
 
 try
 {
-	$imageUpdates = [];
-
 	checkInstall();
+	checkConfig();
+
+	$imageUpdates = [];
 
 	foreach (getContainerIds() as $containerId) {
 		$imageName = getImageName($containerId);
 
-		if (str_starts_with($imageName, 'localhost')) {
+		if (ignoreRegistries($imageName) === true) {
 			output('Skipping ' . $imageName);
 			continue;
 		}
