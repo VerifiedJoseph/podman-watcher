@@ -10,6 +10,7 @@ Use `config.php` (copied from [`config.example.php`](config.example.php)) to con
 | ------------------- | --------------------------------------- |
 | `GOTIFY_SERVER`     | Gotify server address                   |
 | `GOTIFY_TOKEN`      | Gotify application token                |
+| `IGNORE_IMAGES`     | Array of container images to not check. |
 | `IGNORE_REGISTRIES` | Array of image registries to not check. |
 
 ## Requirements

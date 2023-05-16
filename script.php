@@ -27,12 +27,17 @@ function checkConfig()
 		throw new Exception('Gotify token must be set. [GOTIFY_TOKEN]');
 	}
 
-	if (defined('IGNORE_REGISTRIES') === true) {
-		if (empty(constant('IGNORE_REGISTRIES')) || is_array(constant('IGNORE_REGISTRIES')) === false) {
-			throw new Exception('Ignore registries value is empty or not an array be set. [IGNORE_REGISTRIES]');
+	if (defined('IGNORE_IMAGES') === true) {
+		if (empty(constant('IGNORE_IMAGES')) || is_array(constant('IGNORE_IMAGES')) === false) {
+			throw new Exception('Ignore images value is empty or not an array. [IGNORE_IMAGES]');
 		}
 	}
 
+	if (defined('IGNORE_REGISTRIES') === true) {
+		if (empty(constant('IGNORE_REGISTRIES')) || is_array(constant('IGNORE_REGISTRIES')) === false) {
+			throw new Exception('Ignore registries value is empty or not an array. [IGNORE_REGISTRIES]');
+		}
+	}
 }
 
 function output(string $text)
@@ -50,6 +55,23 @@ function ignoreRegistries($name)
 
 	foreach ($registries as $registry) {
 		if (str_starts_with($name, $registry)) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+function ignoreImages($name)
+{
+	$images = [];
+
+	if (defined('IGNORE_IMAGES') === true) {
+		$images = constant('IGNORE_IMAGES');
+	}
+
+	foreach ($images as $image) {
+		if ($name === $image) {
 			return true;
 		}
 	}
@@ -147,12 +169,15 @@ try
 	checkConfig();
 
 	$imageUpdates = [];
+	$checkedCount = 0;
+	$skippedCount = 0;
 
 	foreach (getContainerIds() as $containerId) {
 		$imageName = getImageName($containerId);
 
-		if (ignoreRegistries($imageName) === true) {
+		if (ignoreImages($imageName) === true || ignoreRegistries($imageName) === true) {
 			output('Skipping ' . $imageName);
+			$skippedCount++;
 			continue;
 		}
 
@@ -168,7 +193,13 @@ try
 
 			$imageUpdates[] = $imageName;
 		}
+
+		$checkedCount++;
 	}
+
+	output('Checked: ' . $checkedCount);
+	output('Skipped: ' . $skippedCount);
+	output('Updates found: ' . count($imageUpdates));
 
 	if ($imageUpdates !== []) {
 		output('Sending gotify messages');
