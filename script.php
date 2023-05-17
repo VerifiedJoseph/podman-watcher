@@ -121,11 +121,11 @@ function ignoreImage($name): bool
 } 
 
 /**
- * Get IDs for all running containers
+ * Get IDs for all containers
  */
 function getContainerIds(): array
 {
-	exec('podman ps --format={{.ID}}', $data);
+	exec('podman ps -a --format={{.ID}}', $data);
 	return $data;
 }
 
