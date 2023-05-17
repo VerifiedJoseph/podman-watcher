@@ -259,7 +259,7 @@ try
 		output('Sending gotify message');
 
 		$title = 'Podman image updates for ' . gethostname();
-		$message = "Images requiring a update: \n" . implode("\n", $imageUpdates);
+		$message = "Images requiring an update: \n" . implode("\n", $imageUpdates);
 
 		sendMessage($title, $message);
 	}
