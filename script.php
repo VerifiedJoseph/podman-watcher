@@ -59,6 +59,24 @@ function output(string $text): void
 }
 
 /**
+ * Check if image is a duplicate and has already been checked
+ * @param $name Image name
+ */
+function duplicateImage($name): bool
+{
+	global $imageNamesList;
+
+	if (in_array($name, $imageNamesList, strict: true) === true) {
+		output('Skipping ' . $name . ' (duplicate image)');
+		return true;
+	}
+
+	$imageNamesList[] = $name;
+
+	return false;
+}
+
+/**
  * Check if the registry of an image is on the ignore list
  * @param $name Image name
  */
@@ -72,7 +90,7 @@ function ignoreRegistry($name): bool
 
 	foreach ($registries as $registry) {
 		if (str_starts_with($name, $registry)) {
-			output('Skipping ' . $name . ' (Registry ignore list)');
+			output('Skipping ' . $name . ' (Registry ignore)');
 			return true;
 		}
 	}
@@ -94,7 +112,7 @@ function ignoreImage($name): bool
 
 	foreach ($images as $image) {
 		if ($name === $image) {
-			output('Skipping ' . $name . ' (Image ignore list)');
+			output('Skipping ' . $name . ' (Image ignore)');
 			return true;
 		}
 	}
@@ -202,9 +220,15 @@ try
 	$imageUpdates = [];
 	$checkedCount = 0;
 	$skippedCount = 0;
+	$imageNamesList = [];
 
 	foreach (getContainerIds() as $containerId) {
 		$imageName = getImageName($containerId);
+
+		if (duplicateImage($imageName) === true) {
+			$skippedCount++;
+			continue;
+		}
 
 		if (ignoreImage($imageName) === true || ignoreRegistry($imageName) === true) {
 			$skippedCount++;
