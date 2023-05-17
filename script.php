@@ -72,6 +72,7 @@ function ignoreRegistry($name): bool
 
 	foreach ($registries as $registry) {
 		if (str_starts_with($name, $registry)) {
+			output('Skipping ' . $name . ' (Registry ignore list)');
 			return true;
 		}
 	}
@@ -93,6 +94,7 @@ function ignoreImage($name): bool
 
 	foreach ($images as $image) {
 		if ($name === $image) {
+			output('Skipping ' . $name . ' (Image ignore list)');
 			return true;
 		}
 	}
@@ -205,7 +207,6 @@ try
 		$imageName = getImageName($containerId);
 
 		if (ignoreImage($imageName) === true || ignoreRegistry($imageName) === true) {
-			output('Skipping ' . $imageName);
 			$skippedCount++;
 			continue;
 		}
