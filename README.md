@@ -15,8 +15,8 @@ Use `config.php` (copied from [`config.example.php`](config.example.php)) to con
 
 ## Requirements
 
-- [podman](https://github.com/containers/podman)
-- [skopeo](https://github.com/containers/skopeo)
+- [podman](https://github.com/containers/podman) >= 3.4.2
+- [skopeo](https://github.com/containers/skopeo) >= 1.5.0
 - PHP >= 8.0
 - PHP Extensions:
   - [`JSON`](https://www.php.net/manual/en/book.json.php)
