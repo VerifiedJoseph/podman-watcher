@@ -90,7 +90,7 @@ function ignoreRegistry($name): bool
 
 	foreach ($registries as $registry) {
 		if (str_starts_with($name, $registry)) {
-			output('Skipping ' . $name . ' (Registry ignore)');
+			output('Skipping ' . $name . ' (registry ignore)');
 			return true;
 		}
 	}
@@ -112,7 +112,7 @@ function ignoreImage($name): bool
 
 	foreach ($images as $image) {
 		if ($name === $image) {
-			output('Skipping ' . $name . ' (Image ignore)');
+			output('Skipping ' . $name . ' (image ignore)');
 			return true;
 		}
 	}
