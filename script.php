@@ -241,4 +241,5 @@ try
     }
 } catch (Exception $e) {
     output($e->getMessage());
+    exit(1);
 }
