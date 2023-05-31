@@ -4,7 +4,7 @@ PHP script for being notified when podman container images have updates using [S
 
 ## Configuration
 
-Use `config.php` (copied from [`config.example.php`](config.example.php)) to configure `podman-watcher`.
+Use `config.php` (copied from [`config.example.php`](config.example.php)) to configure.
 
 | Name                |Required | Description                             |
 | --------------------|-------- | --------------------------------------- |
