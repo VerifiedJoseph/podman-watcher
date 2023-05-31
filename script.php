@@ -60,7 +60,7 @@ function output(string $text): void
 
 /**
  * Check if image is a duplicate and has already been checked
- * @param $name Image name
+ * @param string $name Image name
  */
 function duplicateImage($name): bool
 {
@@ -78,7 +78,7 @@ function duplicateImage($name): bool
 
 /**
  * Check if the registry of an image is on the ignore list
- * @param $name Image name
+ * @param string $name Image name
  */
 function ignoreRegistry($name): bool
 {
@@ -100,7 +100,7 @@ function ignoreRegistry($name): bool
 
 /**
  * Check if an image is on the ignore list
- * @param $name Image name
+ * @param string $name Image name
  */
 function ignoreImage($name): bool
 {
@@ -122,6 +122,7 @@ function ignoreImage($name): bool
 
 /**
  * Get local image names
+ * @return array<int, string>
  */
 function getImages(): array
 {
@@ -131,12 +132,12 @@ function getImages(): array
 
 /**
  * Get image creation date
- * @param string $id Image name
+ * @param string $name Image name
  */
 function getImageDate(string $name): int
 {
     exec('podman inspect ' . escapeshellarg($name) . ' --format {{.Created}}', $data);
-    return strtotime($data[0]);
+    return (int) strtotime($data[0]);
 }
 
 /**
@@ -146,7 +147,7 @@ function getImageDate(string $name): int
 function getRemoteImageDate(string $name): int
 {
     exec('skopeo inspect ' . escapeshellarg('docker://'. $name) . ' --format {{.Created}}', $data);
-    return strtotime($data[0]);
+    return (int) strtotime($data[0]);
 }
 
 /**
