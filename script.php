@@ -110,8 +110,8 @@ function ignoreImage($name): bool
 		$images = constant('IGNORE_IMAGES');
 	}
 
-	foreach ($images as $image) {
-		if ($name === $image) {
+	foreach ($images as $imageName) {
+		if ($name === $imageName) {
 			output('Skipping ' . $name . ' (image ignore)');
 			return true;
 		}
@@ -121,41 +121,21 @@ function ignoreImage($name): bool
 } 
 
 /**
- * Get IDs for all containers
+ * Get local image names
  */
-function getContainerIds(): array
+function getImages(): array
 {
-	exec('podman ps -a --format={{.ID}}', $data);
+	exec('podman image ls --format={{.Repository}}:{{.Tag}}', $data);
 	return $data;
 }
 
 /**
- * Get image name
- * @param string $containerId Container ID
- */
-function getImageName(string $containerId): string
-{
-	exec('podman inspect ' . escapeshellarg($containerId) . ' --format {{.ImageName}}', $data);
-	return $data[0];
-} 
-
-/**
- * Get image ID
- * @param string $containerId Container ID
- */
-function getImageId(string $containerId): string
-{
-	exec('podman inspect ' . escapeshellarg($containerId) . ' --format {{.ImageName}}', $data);
-	return $data[0];
-}
-
-/**
  * Get image creation date
- * @param string $id Image ID
+ * @param string $id Image name
  */
-function getImageDate(string $id): int
+function getImageDate(string $name): int
 {
-	exec('podman inspect ' . escapeshellarg($id) . ' --format {{.Created}}', $data);
+	exec('podman inspect ' . escapeshellarg($name) . ' --format {{.Created}}', $data);
 	return strtotime($data[0]);
 }
 
@@ -222,9 +202,7 @@ try
 	$skippedCount = 0;
 	$imageNamesList = [];
 
-	foreach (getContainerIds() as $containerId) {
-		$imageName = getImageName($containerId);
-
+	foreach (getImages() as $imageName) {
 		if (duplicateImage($imageName) === true) {
 			$skippedCount++;
 			continue;
@@ -235,11 +213,9 @@ try
 			continue;
 		}
 
-		$imageId = getImageId($containerId);
-		$imageDate = getImageDate($imageId);
-
 		output('Checking ' . $imageName);
 
+		$imageDate = getImageDate($imageId);
 		$remoteImageDate = getRemoteImageDate($imageName);
 
 		if ($remoteImageDate > $imageDate) {
