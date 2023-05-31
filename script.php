@@ -6,13 +6,13 @@
  */
 function checkInstall(): void
 {
-	if (exec('podman --version') === false) {
-		throw new Exception('podman not found');
-	}
+    if (exec('podman --version') === false) {
+        throw new Exception('podman not found');
+    }
 
-	if (exec('skopeo --version') === false) {
-		throw new Exception('skopeo not found');
-	}
+    if (exec('skopeo --version') === false) {
+        throw new Exception('skopeo not found');
+    }
 }
 
 /**
@@ -22,31 +22,31 @@ function checkInstall(): void
  */
 function checkConfig(): void
 {
-	if (!file_exists('config.php')) {
-		throw new Exception('Configuration file not found.');
-	}
+    if (!file_exists('config.php')) {
+        throw new Exception('Configuration file not found.');
+    }
 
-	require 'config.php';
+    require 'config.php';
 
-	if (defined('GOTIFY_SERVER') === false || empty(constant('GOTIFY_SERVER'))) {
-		throw new Exception('Gotify server must be set. [GOTIFY_SERVER]');
-	}
+    if (defined('GOTIFY_SERVER') === false || empty(constant('GOTIFY_SERVER'))) {
+        throw new Exception('Gotify server must be set. [GOTIFY_SERVER]');
+    }
 
-	if (defined('GOTIFY_TOKEN') === false || empty(constant('GOTIFY_TOKEN'))) {
-		throw new Exception('Gotify token must be set. [GOTIFY_TOKEN]');
-	}
+    if (defined('GOTIFY_TOKEN') === false || empty(constant('GOTIFY_TOKEN'))) {
+        throw new Exception('Gotify token must be set. [GOTIFY_TOKEN]');
+    }
 
-	if (defined('IGNORE_IMAGES') === true) {
-		if (empty(constant('IGNORE_IMAGES')) || is_array(constant('IGNORE_IMAGES')) === false) {
-			throw new Exception('Ignore images value is empty or not an array. [IGNORE_IMAGES]');
-		}
-	}
+    if (defined('IGNORE_IMAGES') === true) {
+        if (empty(constant('IGNORE_IMAGES')) || is_array(constant('IGNORE_IMAGES')) === false) {
+            throw new Exception('Ignore images value is empty or not an array. [IGNORE_IMAGES]');
+        }
+    }
 
-	if (defined('IGNORE_REGISTRIES') === true) {
-		if (empty(constant('IGNORE_REGISTRIES')) || is_array(constant('IGNORE_REGISTRIES')) === false) {
-			throw new Exception('Ignore registries value is empty or not an array. [IGNORE_REGISTRIES]');
-		}
-	}
+    if (defined('IGNORE_REGISTRIES') === true) {
+        if (empty(constant('IGNORE_REGISTRIES')) || is_array(constant('IGNORE_REGISTRIES')) === false) {
+            throw new Exception('Ignore registries value is empty or not an array. [IGNORE_REGISTRIES]');
+        }
+    }
 }
 
 /**
@@ -55,7 +55,7 @@ function checkConfig(): void
  */
 function output(string $text): void
 {
-	echo $text . "\n";
+    echo $text . "\n";
 }
 
 /**
@@ -64,16 +64,16 @@ function output(string $text): void
  */
 function duplicateImage($name): bool
 {
-	global $imageNamesList;
+    global $imageNamesList;
 
-	if (in_array($name, $imageNamesList, strict: true) === true) {
-		output('Skipping ' . $name . ' (duplicate image)');
-		return true;
-	}
+    if (in_array($name, $imageNamesList, strict: true) === true) {
+        output('Skipping ' . $name . ' (duplicate image)');
+        return true;
+    }
 
-	$imageNamesList[] = $name;
+    $imageNamesList[] = $name;
 
-	return false;
+    return false;
 }
 
 /**
@@ -82,20 +82,20 @@ function duplicateImage($name): bool
  */
 function ignoreRegistry($name): bool
 {
-	$registries = ['localhost'];
+    $registries = ['localhost'];
 
-	if (defined('IGNORE_REGISTRIES') === true) {
-		$registries = array_merge($registries, constant('IGNORE_REGISTRIES'));
-	}
+    if (defined('IGNORE_REGISTRIES') === true) {
+        $registries = array_merge($registries, constant('IGNORE_REGISTRIES'));
+    }
 
-	foreach ($registries as $registry) {
-		if (str_starts_with($name, $registry)) {
-			output('Skipping ' . $name . ' (registry ignore)');
-			return true;
-		}
-	}
+    foreach ($registries as $registry) {
+        if (str_starts_with($name, $registry)) {
+            output('Skipping ' . $name . ' (registry ignore)');
+            return true;
+        }
+    }
 
-	return false;
+    return false;
 }
 
 /**
@@ -104,20 +104,20 @@ function ignoreRegistry($name): bool
  */
 function ignoreImage($name): bool
 {
-	$images = [];
+    $images = [];
 
-	if (defined('IGNORE_IMAGES') === true) {
-		$images = constant('IGNORE_IMAGES');
-	}
+    if (defined('IGNORE_IMAGES') === true) {
+        $images = constant('IGNORE_IMAGES');
+    }
 
-	foreach ($images as $imageName) {
-		if ($name === $imageName) {
-			output('Skipping ' . $name . ' (image ignore)');
-			return true;
-		}
-	}
+    foreach ($images as $imageName) {
+        if ($name === $imageName) {
+            output('Skipping ' . $name . ' (image ignore)');
+            return true;
+        }
+    }
 
-	return false;
+    return false;
 } 
 
 /**
@@ -125,8 +125,8 @@ function ignoreImage($name): bool
  */
 function getImages(): array
 {
-	exec('podman image ls --format={{.Repository}}:{{.Tag}}', $data);
-	return $data;
+    exec('podman image ls --format={{.Repository}}:{{.Tag}}', $data);
+    return $data;
 }
 
 /**
@@ -135,8 +135,8 @@ function getImages(): array
  */
 function getImageDate(string $name): int
 {
-	exec('podman inspect ' . escapeshellarg($name) . ' --format {{.Created}}', $data);
-	return strtotime($data[0]);
+    exec('podman inspect ' . escapeshellarg($name) . ' --format {{.Created}}', $data);
+    return strtotime($data[0]);
 }
 
 /**
@@ -145,8 +145,8 @@ function getImageDate(string $name): int
  */
 function getRemoteImageDate(string $name): int
 {
-	exec('skopeo inspect ' . escapeshellarg('docker://'. $name) . ' --format {{.Created}}', $data);
-	return strtotime($data[0]);
+    exec('skopeo inspect ' . escapeshellarg('docker://'. $name) . ' --format {{.Created}}', $data);
+    return strtotime($data[0]);
 }
 
 /**
@@ -157,88 +157,88 @@ function getRemoteImageDate(string $name): int
  * @throws Exception if cURL request failed.
  * @throws Exception if message send failed.
  */
-function sendMessage(string $title, string $message)
+function sendMessage(string $title, string $message): void
 {
-	$data = [
-		'title' => $title,
-		'message' => $message
-	];
+    $data = [
+        'title' => $title,
+        'message' => $message
+    ];
 
-	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_URL, constant('GOTIFY_SERVER') . '/message');
-	curl_setopt($ch, CURLOPT_POST, 1);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-	curl_setopt($ch, CURLOPT_HEADER, 1);
-	curl_setopt($ch, CURLINFO_HEADER_OUT, 1);
-	curl_setopt($ch, CURLOPT_ENCODING, '');
-	curl_setopt($ch, CURLOPT_POST, 1);
-	curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-	curl_setopt($ch, CURLOPT_HTTPHEADER, [
-		'Content-Type:application/json',
-		'Authorization:Bearer ' . constant('GOTIFY_TOKEN')
-	]);
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, constant('GOTIFY_SERVER') . '/message');
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_HEADER, 1);
+    curl_setopt($ch, CURLINFO_HEADER_OUT, 1);
+    curl_setopt($ch, CURLOPT_ENCODING, '');
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Content-Type:application/json',
+        'Authorization:Bearer ' . constant('GOTIFY_TOKEN')
+    ]);
 
-	curl_exec($ch);
-	$info = curl_getinfo($ch);
+    curl_exec($ch);
+    $info = curl_getinfo($ch);
 
-	if (curl_errno($ch)) {
-		throw new Exception('Request failed:' . curl_error($ch));
-	}
-	
-	if ($info['http_code'] !== 200) {
-		throw new Exception('Message send failed' . '(' . $info['http_code'] .')');
-	}
+    if (curl_errno($ch)) {
+        throw new Exception('Request failed:' . curl_error($ch));
+    }
+    
+    if ($info['http_code'] !== 200) {
+        throw new Exception('Message send failed' . '(' . $info['http_code'] .')');
+    }
 
-	output('Sent message');
+    output('Sent message');
 }
 
 try
 {
-	checkInstall();
-	checkConfig();
+    checkInstall();
+    checkConfig();
 
-	$imageUpdates = [];
-	$checkedCount = 0;
-	$skippedCount = 0;
-	$imageNamesList = [];
+    $imageUpdates = [];
+    $checkedCount = 0;
+    $skippedCount = 0;
+    $imageNamesList = [];
 
-	foreach (getImages() as $imageName) {
-		if (duplicateImage($imageName) === true) {
-			$skippedCount++;
-			continue;
-		}
+    foreach (getImages() as $imageName) {
+        if (duplicateImage($imageName) === true) {
+            $skippedCount++;
+            continue;
+        }
 
-		if (ignoreImage($imageName) === true || ignoreRegistry($imageName) === true) {
-			$skippedCount++;
-			continue;
-		}
+        if (ignoreImage($imageName) === true || ignoreRegistry($imageName) === true) {
+            $skippedCount++;
+            continue;
+        }
 
-		output('Checking ' . $imageName);
+        output('Checking ' . $imageName);
 
-		$imageDate = getImageDate($imageName);
-		$remoteImageDate = getRemoteImageDate($imageName);
+        $imageDate = getImageDate($imageName);
+        $remoteImageDate = getRemoteImageDate($imageName);
 
-		if ($remoteImageDate > $imageDate) {
-			output('Found update for ' . $imageName);
+        if ($remoteImageDate > $imageDate) {
+            output('Found update for ' . $imageName);
 
-			$imageUpdates[] = $imageName;
-		}
+            $imageUpdates[] = $imageName;
+        }
 
-		$checkedCount++;
-	}
+        $checkedCount++;
+    }
 
-	output('Checked: ' . $checkedCount);
-	output('Skipped: ' . $skippedCount);
-	output('Updates: ' . count($imageUpdates));
+    output('Checked: ' . $checkedCount);
+    output('Skipped: ' . $skippedCount);
+    output('Updates: ' . count($imageUpdates));
 
-	if ($imageUpdates !== []) {
-		output('Sending gotify message');
+    if ($imageUpdates !== []) {
+        output('Sending gotify message');
 
-		$title = 'Podman image updates for ' . gethostname();
-		$message = "Image updates: \n" . implode("\n", $imageUpdates);
+        $title = 'Podman image updates for ' . gethostname();
+        $message = "Image updates: \n" . implode("\n", $imageUpdates);
 
-		sendMessage($title, $message);
-	}
+        sendMessage($title, $message);
+    }
 } catch (Exception $e) {
-	output($e->getMessage());
+    output($e->getMessage());
 }
