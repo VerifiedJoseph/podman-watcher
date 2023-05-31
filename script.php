@@ -215,7 +215,7 @@ try
 
 		output('Checking ' . $imageName);
 
-		$imageDate = getImageDate($imageId);
+		$imageDate = getImageDate($imageName);
 		$remoteImageDate = getRemoteImageDate($imageName);
 
 		if ($remoteImageDate > $imageDate) {
