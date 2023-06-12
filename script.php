@@ -1,11 +1,18 @@
 <?php
 
+define('MIN_PHP_VERSION', '8.0.0');
+
 /**
- * Check system for podman & skopeo
+ * Check system for php8, podman and skopeo
+ * @throws Exception if php version is lower than required.
  * @throws Exception if a program is not found.
  */
 function checkInstall(): void
 {
+    if(version_compare(PHP_VERSION, constant('MIN_PHP_VERSION')) === -1) {
+        throw new Exception('Script requires at least PHP version ' . constant('MIN_PHP_VERSION'));
+    }
+
     if (exec('podman --version') === false) {
         throw new Exception('podman not found');
     }
